@@ -107,7 +107,9 @@ class WebDAV(WithRequester):
         # get timestamp of downloaded file from file property on Nextcloud
         # If it succeeded, set the timestamp to saved local file
         # If the timestamp string is invalid or broken, the timestamp is downloaded time.
-        file_timestamp_str = (file_data.data[0].get('last_modified'))
+        file_timestamp_str = (file_data.data[0].get('last_modified')
+                              if self.json_output
+                              else file_data.data[0].last_modified)
         file_timestamp = timestamp_to_epoch_time(file_timestamp_str)
         if isinstance(file_timestamp, int):
             os.utime(filename, (datetime.now().timestamp(), file_timestamp))
