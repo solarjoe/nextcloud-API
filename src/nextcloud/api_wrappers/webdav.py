@@ -172,7 +172,7 @@ class WebDAV(WithRequester):
             folder_path (str): The folder tree
         Returns:
         """
-        tree = pathlib.PurePath(tree_path)
+        tree = pathlib.PurePosixPath(tree_path)
         parents = list(tree.parents)
         ret = True
         subfolders = parents[:-1][::-1] + [tree]
