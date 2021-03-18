@@ -69,7 +69,7 @@ class WebDAV(WithRequester):
         resp.data = files_data if not self.json_output else [each.as_dict() for each in files_data]
         return resp
 
-    def download_file(self, uid, path):
+    def download_file(self, uid, path, local_file=None):
         """
         Download file of given user by path
         File will be saved to working directory
@@ -84,6 +84,7 @@ class WebDAV(WithRequester):
         Args:
             uid (str): uid of user
             path (str): file path
+            local_file (str): file on local storage
 
         Returns:
             None
@@ -98,10 +99,18 @@ class WebDAV(WithRequester):
                               else file_data.data[0].resource_type)
         if file_resource_type == File.COLLECTION_RESOURCE_TYPE:
             raise ValueError("This is a collection, please specify file path")
-        if filename in os.listdir('./'):
+        
+        if local_file is not None:
+            dest_file = local_file
+        else:
+            dest_file = filename
+        
+        if dest_file in os.listdir('./'):
             raise ValueError("File with such name already exists in this directory")
+        
         res = self.requester.download(additional_url)
-        with open(filename, 'wb') as f:
+        
+        with open(dest_file, 'wb') as f:
             f.write(res.data)
 
         # get timestamp of downloaded file from file property on Nextcloud
