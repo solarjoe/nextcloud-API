@@ -7,7 +7,7 @@ import xml.etree.ElementTree as ET
 
 from datetime import datetime
 from nextcloud.base import WithRequester
-
+from pathlib import Path 
 
 class WebDAV(WithRequester):
 
@@ -100,14 +100,16 @@ class WebDAV(WithRequester):
         if file_resource_type == File.COLLECTION_RESOURCE_TYPE:
             raise ValueError("This is a collection, please specify file path")
         
-        if local_file is not None:
+        if local_file:
             dest_file = local_file
         else:
-            dest_file = filename
+            dest_file = Path.cwd().joinpath(filename)
+
+        print('webdav dest_file', dest_file)
         
-        if dest_file in os.listdir('./'):
-            raise ValueError("File with such name already exists in this directory")
-        
+        if Path(dest_file).exists():
+            raise ValueError("File with such name already exists")
+           
         res = self.requester.download(additional_url)
         
         with open(dest_file, 'wb') as f:
@@ -121,7 +123,7 @@ class WebDAV(WithRequester):
                               else file_data.data[0].last_modified)
         file_timestamp = timestamp_to_epoch_time(file_timestamp_str)
         if isinstance(file_timestamp, int):
-            os.utime(filename, (datetime.now().timestamp(), file_timestamp))
+            os.utime(dest_file, (datetime.now().timestamp(), file_timestamp))
 
     def upload_file(self, uid, local_filepath, remote_filepath, timestamp=None):
         """
