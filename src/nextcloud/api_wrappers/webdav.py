@@ -87,7 +87,7 @@ class WebDAV(WithRequester):
             local_file (str): file on local storage
 
         Returns:
-            None
+            response (WebDAVResponse)
         """
         additional_url = "/".join([uid, path])
         filename = path.split('/')[-1] if '/' in path else path
@@ -125,6 +125,8 @@ class WebDAV(WithRequester):
         if isinstance(file_timestamp, int):
             os.utime(dest_file, (datetime.now().timestamp(), file_timestamp))
 
+        return res
+
     def upload_file(self, uid, local_filepath, remote_filepath, timestamp=None):
         """
         Upload file to Nextcloud storage
@@ -134,6 +136,9 @@ class WebDAV(WithRequester):
             local_filepath (str): path to file on local storage
             remote_filepath (str): path where to upload file on Nextcloud storage
             timestamp (int): timestamp of upload file. If None, get time by local file.
+        
+        Returns:
+            response (WebDAVResponse)
         """
         with open(local_filepath, 'rb') as f:
             file_contents = f.read()
@@ -150,6 +155,9 @@ class WebDAV(WithRequester):
             file_contents (bytes): Bytes the file to be uploaded consists of
             remote_filepath (str): path where to upload file on Nextcloud storage
             timestamp (int):  mtime of upload file
+        
+        Returns:
+            response (WebDAVResponse)
         """
         additional_url = "/".join([uid, remote_filepath])
         return self.requester.put_with_timestamp(additional_url, data=file_contents, timestamp=timestamp)
@@ -161,6 +169,9 @@ class WebDAV(WithRequester):
         Args:
             uid (str): uid of user
             folder_path (str): folder path
+
+        Returns:
+            response (WebDAVResponse)
         """
         return self.requester.make_collection(additional_url="/".join([uid, folder_path]))
 
@@ -198,6 +209,9 @@ class WebDAV(WithRequester):
         Args:
             uid (str): uid of user
             path (str): file or folder path to delete
+        
+        Returns:
+            response (WebDAVResponse)
         """
         url = "/".join([uid, path])
         return self.requester.delete(url=url)
@@ -211,6 +225,9 @@ class WebDAV(WithRequester):
             path (str): file or folder path to move
             destionation_path (str): destination where to move
             overwrite (bool): allow destination path overriding
+
+        Returns:
+            response (WebDAVResponse)
         """
         path_url = "/".join([uid, path])
         destination_path_url = "/".join([uid, destination_path])
@@ -226,6 +243,9 @@ class WebDAV(WithRequester):
             path (str): file or folder path to copy
             destionation_path (str): destination where to copy
             overwrite (bool): allow destination path overriding
+        
+        Returns:
+            response (WebDAVResponse)
         """
         path_url = "/".join([uid, path])
         destination_path_url = "/".join([uid, destination_path])
@@ -239,6 +259,9 @@ class WebDAV(WithRequester):
         Args:
             uid (str): uid of user
             path (str): file or folder path to make favorite
+
+        Returns:
+            response (WebDAVResponse)
         """
         data = """<?xml version="1.0"?>
         <d:propertyupdate xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
