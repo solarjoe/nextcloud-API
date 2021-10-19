@@ -24,7 +24,7 @@ class WebDAVResponse(NextCloudResponse):
         "MKCOL": [WebDAVStatusCodes.CREATED_CODE],
         "COPY": [WebDAVStatusCodes.CREATED_CODE, WebDAVStatusCodes.NO_CONTENT_CODE],
         "MOVE": [WebDAVStatusCodes.CREATED_CODE, WebDAVStatusCodes.NO_CONTENT_CODE],
-        "PUT": [WebDAVStatusCodes.CREATED_CODE],
+        "PUT": [WebDAVStatusCodes.CREATED_CODE, WebDAVStatusCodes.NO_CONTENT_CODE],
         "DELETE": [WebDAVStatusCodes.NO_CONTENT_CODE]
     }
 
