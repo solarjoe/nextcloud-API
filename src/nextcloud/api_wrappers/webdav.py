@@ -162,6 +162,8 @@ class WebDAV(WithRequester):
         additional_url = "/".join([uid, remote_filepath])
         return self.requester.put_with_timestamp(additional_url, data=file_contents, timestamp=timestamp)
 
+    # should this be successful if the folder already exists?
+    # (add WebDAVStatusCodes.ALREADY_EXISTS_CODE)
     def create_folder(self, uid, folder_path):
         """
         Create folder on Nextcloud storage
